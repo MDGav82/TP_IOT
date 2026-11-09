@@ -1,25 +1,43 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { COULEURS } from '../styles/couleurs';
 
-export default function TacheCard({ titre, categorie, terminee }) {
+export default function TacheCard({ titre, categorie, terminee, onToggle, onDelete }) {
   return (
     <View style={styles.card}>
-      {/* Titre  + Badge  */}
       <View style={styles.topRow}>
         <Text style={[styles.titre, terminee && styles.texteBarre]}>
           {titre}
         </Text>
-        <View style={styles.badge}>
+        <View style={styles.badgeContainer}>
           <Text style={styles.badgeText}>{categorie}</Text>
         </View>
       </View>
 
-      {/* Statut */}
       <View style={styles.bottomRow}>
-        <Text style={[styles.statutText, terminee ? styles.vert : styles.gris]}>
-          {terminee ? '✓ Terminée' : '○ À faire'}
-        </Text>
+        <Pressable 
+          style={[styles.statusButton, terminee ? styles.btnTerminee : styles.btnAFaire]} 
+          onPress={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
+        >
+          <Text style={[styles.statusText, terminee ? styles.textTerminee : styles.textAFaire]}>
+            {terminee ? '✓ Terminée' : '○ À faire'}
+          </Text>
+        </Pressable>
+
+        {onDelete && (
+          <Pressable 
+            style={styles.deletePressable}
+            onPress={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+          >
+            <Text style={styles.deleteText}>Supprimer</Text>
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -27,58 +45,81 @@ export default function TacheCard({ titre, categorie, terminee }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COULEURS.blanc,
     borderRadius: 12,
     padding: 16,
-    marginVertical: 6,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#EFEFEF',
+    borderColor: '#EEEEEE',
+    marginBottom: 10,
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   titre: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: 'bold',
     color: COULEURS.texte,
     flex: 1,
-    marginRight: 8,
+    marginRight: 10,
   },
   texteBarre: {
     textDecorationLine: 'line-through',
     color: COULEURS.muted,
   },
-  badge: {
-    backgroundColor: COULEURS.accent,
+  badgeContainer: {
+    backgroundColor: '#E0F7FA',
     paddingHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 4,
     borderRadius: 12,
   },
   badgeText: {
-    fontSize: 11,
-    color: '#FFFFFF',
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#00ACC1',
   },
   bottomRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 4,
   },
-  statutText: {
+  statusButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  btnTerminee: {
+    backgroundColor: '#E8F5E9',
+    borderColor: '#A5D6A7',
+  },
+  btnAFaire: {
+    backgroundColor: '#FFF3E0',
+    borderColor: '#FFE0B2',
+  },
+  statusText: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '600',
   },
-  vert: {
+  textTerminee: {
     color: '#2E7D32',
   },
-  gris: {
-    color: COULEURS.muted,
+  textAFaire: {
+    color: '#EF6C00',
+  },
+  deletePressable: {
+    paddingVertical: 4,
+  },
+  deleteText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#E53935',
   },
 });

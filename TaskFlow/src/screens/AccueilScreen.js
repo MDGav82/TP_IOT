@@ -1,69 +1,59 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Pressable, SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import TacheCard from '../components/TacheCard';
 import { COULEURS } from '../styles/couleurs';
 
-const TACHES_FICTIVES = [
-  { id: '1', titre: 'Créer le design de l\'application', categorie: 'Design', terminee: true },
-  { id: '2', titre: 'Configurer l\'arborescence Expo', categorie: 'Technique', terminee: true },
-  { id: '3', titre: 'Développer le composant TacheCard', categorie: 'Développement', terminee: true },
-  { id: '4', titre: 'Intégrer l\'écran d\'accueil avec un ScrollView', categorie: 'Développement', terminee: false },
-  { id: '5', titre: 'TacheCard de test', categorie: 'Tests', terminee: false },
-];
+export default function AccueilScreen({ taches = [], onToggle, onDelete }) {
+  const navigation = useNavigation();
 
-export default function AccueilScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        {/* En-tête */}
-        <View style={styles.header}>
+      <View style={styles.container}>
+        <View style={styles.headerRow}>
           <Text style={styles.appTitle}>TaskFlow</Text>
-          <Text style={styles.appSubtitle}>Vos tâches du moment</Text>
+          <Pressable 
+            style={styles.addButton} 
+            onPress={() => navigation.navigate('Ajouter')}
+          >
+            <Text style={styles.addButtonText}>Ajouter</Text>
+          </Pressable>
         </View>
 
-        {/* Liste des tâches */}
-        <View style={styles.listContainer}>
-          {TACHES_FICTIVES.map((tache) => (
-            <TacheCard
-              key={tache.id}
-              titre={tache.titre}
-              categorie={tache.categorie}
-              terminee={tache.terminee}
-            />
-          ))}
-        </View>
-      </ScrollView>
+        <FlatList
+          data={taches}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Pressable 
+              onPress={() => navigation.navigate('Detail', { 
+                id: item.id, 
+                titre: item.titre, 
+                categorie: item.categorie, 
+                terminee: item.terminee,
+              })}
+            >
+              <TacheCard
+                titre={item.titre}
+                categorie={item.categorie}
+                terminee={item.terminee}
+                onToggle={() => onToggle(item.id)}
+                onDelete={() => onDelete(item.id)}
+              />
+            </Pressable>
+          )}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: COULEURS.fond,
-  },
-  container: {
-    padding: 20,
-    backgroundColor: COULEURS.fond,
-  },
-  header: {
-    marginBottom: 20,
-    marginTop: 10,
-  },
-  appTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COULEURS.primaire,
-  },
-  appSubtitle: {
-    fontSize: 14,
-    color: COULEURS.muted,
-    marginTop: 4,
-  },
-  listContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    gap: 12,
-  },
+  safeArea: { flex: 1, backgroundColor: COULEURS.fond },
+  container: { flex: 1, padding: 20 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, marginTop: 10 },
+  appTitle: { fontSize: 28, fontWeight: 'bold', color: COULEURS.primaire },
+  addButton: { backgroundColor: COULEURS.primaire, paddingHorizontal: 14, paddingVertical: 8, borderRadius: 8 },
+  addButtonText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 14 },
+  listContainer: { paddingBottom: 20, gap: 10 },
 });

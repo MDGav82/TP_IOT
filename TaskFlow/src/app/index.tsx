@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import AccueilScreen from '../screens/AccueilScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import AppNavigator from '../../src/navigation/AppNavigator';
 
 export default function Page() {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} />;
-  }
-
-  return <AccueilScreen />;
+  return (
+    <NavigationContainer independent={true}>
+      <AppNavigator />
+    </NavigationContainer>
+  );
 }

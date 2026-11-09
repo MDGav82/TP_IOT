@@ -1,7 +1,8 @@
 export const COULEURS = {
-  fond: '#F5F5F5',
-  texte: '#222222',
-  primaire: '#44445A',
-  accent: '#71D2E3',
-  muted: '#8B8BA3',
+  primaire: '#007AFF',
+  fond: '#F8F9FA',
+  texte: '#2C3E50',
+  muted: '#888888',
+  blanc: '#FFFFFF',
+  carteFond: '#FFFFFF',
 };
